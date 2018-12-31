@@ -1,91 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="ISO-8859-1" />
-<title th:text="${titulo}">Insert title here</title>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
+<head th:replace="layout/layout :: head">
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-		<a class="navbar-brand" href="#"><img width="100%" height="40px"
-			th:src="@{/imagenes/logo.jpg}"></img></a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbarExampleDefault"
-			aria-controls="navbarsExampleDefault" aria-expanded="false"
-			aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse">
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active"><a class="nav-link" href="#">Inicio</a></li>
-					<li class="nav-item active"><a class="nav-link" href="#about" th:href="@{/listar}">Empaques</a></li>
-				<li class="nav-item active"><a class="nav-link" href="#about">Perfil</a></li>
-				<li class="nav-item active"><a class="nav-link" href="#about">Administracion</a></li>
-				<li class="nav-item active"><a class="nav-link" href="#about">Mis
-						Turnos</a></li>
-			</ul>
-		</div>
-	</nav>
-	<div class="container">
-	<h1 th:text="${titulo}"
-			class="text-secondary border border-success border-top-0 border-left-0 border-right-0"></h1>
-
+<header th:replace="layout/layout :: header" ></header>
+	<div class="container py-4">
+	<div class="card bg-light">
+	<div class="card-header bg-dark text-light" th:text="${titulo}"></div>
+	<div class="card-body text-center">
 	<form th:action="@{/form}" th:object="${empaque}" method="post">
 	
 	<div th:class="${clase}">
-	<div class="col-sm-6 text-center">
-	<label class="col-sm-2 col-form-label" for="rut">Rut</label>
+	<div class="col">
+	<label class="col-form-label" for="rut">Rut</label>
 		<input maxlength="9" id="rut" type="text" class="form-control" th:field="*{rut}" />
 		<small class="form-text text-danger" th:if="${#fields.hasErrors('rut')}" th:errors="*{rut}"></small>
 		<small  class="form-text text-danger"  th:text="${mensaje}"></small>
 		</div>
-		</div>
-			<div class="form-group form-row text-center">
-	<div class="form-group col-md-3">
-	<label class="col-sm-2 col-form-label" for="nombre">Nombre</label>
-		<input id="nombre" type="text" class="form-control" th:field="*{nombre}" />
-		<small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
-		</div>
-	<div class="form-group col-md-3">
-	<label class="col-sm-2 col-form-label" for="apellido">Apellido</label>
-		<input id="apellido" type="text" class="form-control" th:field="*{apellido}" />
-		<small class="form-text text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
-		</div>
-		</div>
-				<div class="form-group row text-center">
-	<div class="col-sm-6">
-	<label class="col-sm-2 col-form-label" for="correo">Email</label>
-		<input id="correo" type="text" class="form-control" th:field="*{correo}" />
-		<small class="form-text text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
-		</div>
-		</div>
-		<div class="form-group row text-center">
-	<div class="col-sm-6">
-	<label class="col-sm-2 col-form-label" for="grupo">Grupo</label>
+		<div class="col">
+			<label class="col-form-label" for="grupo">Grupo</label>
 		<input id="grupo" type="text" class="form-control" th:field="*{IdGrupo}" />
 		<small class="form-text text-danger" th:if="${#fields.hasErrors('IdGrupo')}" th:errors="*{IdGrupo}"></small>
 		</div>
 		</div>
-<div class="btn-group" data-toggle="buttons">
-<label class="col-sm-2 col-form-label" for="estado">Estado</label><hr />
-  <label class="btn btn-success">
+			<div class="form-row">
+	<div class="col">
+	<label class="col-form-label" for="nombre">Nombre</label>
+		<input id="nombre" type="text" class="form-control" th:field="*{nombre}" />
+		<small class="form-text text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+		</div>
+	<div class="col">
+	<label class="col-form-label" for="apellido">Apellido</label>
+		<input id="apellido" type="text" class="form-control" th:field="*{apellido}" />
+		<small class="form-text text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
+		</div>
+		</div>
+				<div class="form-row">
+	<div class="col">
+	<label class="col-form-label" for="correo">Email</label>
+		<input id="correo" type="text" class="form-control" th:field="*{correo}" />
+		<small class="form-text text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></small>
+		</div>
+		<div class="col">
+		<br />
+		<div class="card">
+  <div class="card-header">
+    Estado
+  </div>
+  <div class="card-body">
+     <label class="btn btn-success">
     <input th:field="*{estado}" value="1" type="radio">  Activo
   </label>
-  <label class="btn btn-danger">
+   <label class="btn btn-danger">
     <input th:field="*{estado}" value="0" type="radio"> Inactivo
   </label>
+  </div>
 </div>
-		<div class="form-group text-center">
-		<div class="col-sm-6">
+		</div>
+		</div>
+		<div class="form-group">
 		<br />
-				<input type="submit" class="btn btn-primary" onclick="return confirm('Estas Seguro?')"  value="Crear Empaque" />
-	</div>
+				<input type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')" swalt  value="Crear Empaque" />
 	</div>
 	</form>
 	</div>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	</div>
+	</div>
+		<footer th:replace="layout/layout :: footer"></footer>
 </body>
 </html>
