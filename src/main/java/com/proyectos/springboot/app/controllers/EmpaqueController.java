@@ -24,12 +24,13 @@ public class EmpaqueController {
 	private IEmpaqueService empaqueService;
 	
 	
-	@RequestMapping(value="/listar",method=RequestMethod.GET)
+	@RequestMapping(value= {"/listar","/"},method=RequestMethod.GET)
 	public String listar(Model model) {
 		model.addAttribute("titulo","Listado Empaques");
 		model.addAttribute("empaques",empaqueService.findAll());
 		return "listar";
 	}
+	
 	
 	
 	@RequestMapping(value="/form")
