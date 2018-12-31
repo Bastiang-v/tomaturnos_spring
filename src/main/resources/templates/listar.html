@@ -14,6 +14,7 @@
 				Empaque</a>
 		</div>
 		<br />
+		<small>
 		<table class="table-striped table table-responsive">
 			<thead class="bg-dark text-light">
 				<tr>
@@ -27,7 +28,7 @@
 					<th>Eliminar</th>
 				</tr>
 			</thead>
-					<small>
+
 			<tbody>
 				<tr th:each="empaque: ${empaques}">
 					<td th:text="${empaque.rut}"></td>
@@ -44,8 +45,8 @@
 						onclick="return confirm('Confirmar Eliminacion?')"><sapn class="fa fa-close"></sapn></a></td>
 				</tr>
 			</tbody>
-			</small>
 		</table>
+		</small>
 		<small>
 		<nav th:replace="paginator-nav :: paginator"></nav>
 		</small>
