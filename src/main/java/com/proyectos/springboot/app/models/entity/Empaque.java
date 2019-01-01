@@ -38,6 +38,25 @@ public class Empaque implements Serializable{
 	@NotNull
 	private int IdGrupo;
 	
+	private String foto;
+	private String certificado;
+	
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
+	public String getCertificado() {
+		return certificado;
+	}
+
+	public void setCertificado(String certificado) {
+		this.certificado = certificado;
+	}
+
 	@PrePersist
 	public void prepersis() {
 		createAt = new Date();

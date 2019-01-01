@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectos.springboot.app.models.entity.Empaque;
@@ -48,7 +49,7 @@ public class EmpaqueController {
 	public String crear(Map<String, Object> model) {
 		Empaque empaque = new Empaque();
 		model.put("empaque", empaque);
-		model.put("clase","form-row");
+		model.put("clase","@{/form}");
 	 model.put("titulo","Crear Empaque");
 	 return "form";
 	}
@@ -67,42 +68,33 @@ public class EmpaqueController {
 		
 	}
 	model.put("empaque", empaque);
-	model.put("clase","invisible");
+	model.put("clase","@{/edit}");
 	model.put("titulo","Editar Empaque");
-		return "forme";
+		return "form";
 	}
 	
 	@RequestMapping(value="/form", method=RequestMethod.POST)
-	public String guardar(@Valid Empaque empaque, BindingResult result,Model model,RedirectAttributes flash,SessionStatus status) {
+	public String guardar(@Valid Empaque empaque, BindingResult result,Model model,@RequestParam("file") MultipartFile foto,@RequestParam("credencial") MultipartFile credencial, RedirectAttributes flash,SessionStatus status) {
 		
 		if (result.hasErrors()) {
 			model.addAttribute("clase","form-row");
 			model.addAttribute("titulo","Crear Empaque");
 			return "form";
 		}
-		try {
-			Empaque empq = null;
-			empq = empaqueService.findOne(empaque.getRut());
 			
-			if (empaque.getRut().equals(empq.getRut())) {
+			if (empaqueService.findOne(empaque.getRut())!=null) {
 				model.addAttribute("clase","form-row");
 				model.addAttribute("titulo","Crear Empaque");
 				model.addAttribute("mensaje","Rut Ya se encuentra Registrado");
-				flash.addFlashAttribute("error","Error al crear : Rut Ya se encuentra Registrado");
+				flash.addFlashAttribute("warning","Error al crear  Rut Ya se encuentra Registrado");
 				return "form";
 			} else {
 				empaqueService.save(empaque);
-			return "redirect:listar";
+				status.setComplete();
+				flash.addFlashAttribute("success","Empaque Creado Con exito");
+				return "redirect:listar";
 			}
-		} catch (Exception e) {
-			empaqueService.save(empaque);
-			status.setComplete();
-			flash.addFlashAttribute("success","Empaque Creado Con exito");
-			return "redirect:listar";
 		}
-		
-		
-	}
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editar(@Valid Empaque empaque, BindingResult result,Model model,SessionStatus status,RedirectAttributes flash) {
 		

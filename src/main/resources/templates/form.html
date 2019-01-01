@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html  lang="es"  xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout/layout :: head">
-</head>
+</head> 
 <body>
 <header th:replace="layout/layout :: header" ></header>
 	<div class="container py-4">
 	<div class="card bg-light">
 	<div class="card-header bg-dark text-light" th:text="${titulo}"></div>
 	<div class="card-body text-center">
-	<form th:action="@{/form}" th:object="${empaque}" method="post">
-	
-	<div th:class="${clase}">
+	<form  th:action="${clase}" th:object="${empaque}" method="post" enctype="multipart/form-data">	
+	<div th:if="${clase =='@{/form}'}"  class="form-row">
 	<div class="col">
 	<label class="col-form-label" for="rut">Rut</label>
 		<input maxlength="9" id="rut" type="text" class="form-control" th:field="*{rut}" />
+		<small class="form-text text-danger" th:if="${#fields.hasErrors('rut')}" th:errors="*{rut}"></small>
+		<small  class="form-text text-danger"  th:text="${mensaje}"></small>
+		</div>
+		<div class="col">
+			<label class="col-form-label" for="grupo">Grupo</label>
+		<input id="grupo" type="text" class="form-control" th:field="*{IdGrupo}" />
+		<small class="form-text text-danger" th:if="${#fields.hasErrors('IdGrupo')}" th:errors="*{IdGrupo}"></small>
+		</div>
+		</div>
+		<div th:if="${clase =='@{/edit}'}"  class="form-row">
+	<div class="col">
+	<label class="col-form-label" for="rut">Rut</label>
+		<input readonly="readonly" maxlength="9" id="rut" type="text" class="form-control" th:field="*{rut}" />
 		<small class="form-text text-danger" th:if="${#fields.hasErrors('rut')}" th:errors="*{rut}"></small>
 		<small  class="form-text text-danger"  th:text="${mensaje}"></small>
 		</div>
@@ -58,9 +70,30 @@
 </div>
 		</div>
 		</div>
-		<div class="form-group">
 		<br />
-				<input type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')" swalt  value="Crear Empaque" />
+		<label>Subir Arhivos</label>
+		<small><div class="form-row">
+<div class="custom-file col col-md-4">
+<label for="avatar">Certificado Alumno</label>
+<input type="file"
+       id="avatar" name="avatar"
+       accept="application/pdf">
+</div>
+</div>
+</small><br />
+<div class="form-row">
+<div class="col col-md-4">
+       <input type="file" class="custom-file-input" lang="es" id="fileUpload" name="certificado" />
+<label  for="certificado" class="custom-file-label text-left">Credencial</label>
+<div class="">
+<div  id="image-holder"></div>
+<br />
+</div>
+</div>
+</div>
+		<div class="form-group">
+				<input th:if="${clase =='@{/form}'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')"  value="Crear Empaque" />
+				<input th:if="${clase =='@{/edit}'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')" value="Editar Empaque" />
 	</div>
 	</form>
 	</div>
