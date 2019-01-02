@@ -18,12 +18,15 @@ $("#fileUpload").on('change', function () {
                  reader.onload = function (e) {
                      $("<img />", {
                          "src": e.target.result,
-                             "class": "img-thumbnail"
+                             "class": "img-thumbnail","id": "foto"
                      }).appendTo(image_holder);
                  }
-
                  image_holder.show();
                  reader.readAsDataURL($(this)[0].files[i]);
+                 document.getElementById("btncerrar").className = "btn btn-xs btn-danger";
+                 document.getElementById("textcredencial").innerHTML = "Credencial Agregada";
+                 document.getElementById("textcredencial").className = "bg-success custom-file-label text-left text-light";
+                 
              }
 
          } else {
@@ -33,3 +36,13 @@ $("#fileUpload").on('change', function () {
          alert("Porfavor selecciona Imagenes o PDF");
      }
  });
+
+function something_happens() {
+	document.getElementById("foto").src = null;
+	document.getElementById("btncerrar").className = "invisible";
+	document.getElementById("textcredencial").className = "custom-file-label text-left";
+	   var div = document.getElementById('foto');
+	        var parent = div.parentElement;
+	        parent.removeChild(div);
+	        document.getElementById("textcredencial").innerHTML = "Agregar Credencial";
+};

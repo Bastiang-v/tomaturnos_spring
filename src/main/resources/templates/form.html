@@ -9,7 +9,7 @@
 	<div class="card-header bg-dark text-light" th:text="${titulo}"></div>
 	<div class="card-body text-center">
 	<form  th:action="${clase}" th:object="${empaque}" method="post" enctype="multipart/form-data">	
-	<div th:if="${clase =='@{/form}'}"  class="form-row">
+	<div th:if="${clase == '/form'}"  class="form-row">
 	<div class="col">
 	<label class="col-form-label" for="rut">Rut</label>
 		<input maxlength="9" id="rut" type="text" class="form-control" th:field="*{rut}" />
@@ -22,7 +22,7 @@
 		<small class="form-text text-danger" th:if="${#fields.hasErrors('IdGrupo')}" th:errors="*{IdGrupo}"></small>
 		</div>
 		</div>
-		<div th:if="${clase =='@{/edit}'}"  class="form-row">
+		<div th:if="${clase =='/edit'}"  class="form-row">
 	<div class="col">
 	<label class="col-form-label" for="rut">Rut</label>
 		<input readonly="readonly" maxlength="9" id="rut" type="text" class="form-control" th:field="*{rut}" />
@@ -76,24 +76,27 @@
 <div class="custom-file col col-md-4">
 <label for="avatar">Certificado Alumno</label>
 <input type="file"
-       id="avatar" name="avatar"
+       id="avatar" name="file"
        accept="application/pdf">
 </div>
 </div>
 </small><br />
 <div class="form-row">
 <div class="col col-md-4">
-       <input type="file" class="custom-file-input" lang="es" id="fileUpload" name="certificado" />
-<label  for="certificado" class="custom-file-label text-left">Credencial</label>
+       <input type="file" class="custom-file-input" lang="es" id="fileUpload" name="credencial" />
+<label  for="certificado" id="textcredencial" class="custom-file-label text-left">Agregar Credencial</label>
 <div class="">
-<div  id="image-holder"></div>
+<div  id="image-holder">
+</div>
+<input  value="Eliminar" id="btncerrar" class="invisible" onclick="something_happens()" type="button">
 <br />
 </div>
 </div>
 </div>
 		<div class="form-group">
-				<input th:if="${clase =='@{/form}'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')"  value="Crear Empaque" />
-				<input th:if="${clase =='@{/edit}'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')" value="Editar Empaque" />
+		<br />
+				<input th:if="${clase =='/form'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')"  value="Crear Empaque" />
+				<input th:if="${clase =='/edit'}" type="submit" class="btn btn-primary bg-dark text-light" onclick="return confirm('Estas Seguro?')" value="Editar Empaque" />
 	</div>
 	</form>
 	</div>

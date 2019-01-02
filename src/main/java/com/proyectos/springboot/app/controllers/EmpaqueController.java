@@ -1,5 +1,9 @@
 package com.proyectos.springboot.app.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -49,7 +53,7 @@ public class EmpaqueController {
 	public String crear(Map<String, Object> model) {
 		Empaque empaque = new Empaque();
 		model.put("empaque", empaque);
-		model.put("clase","@{/form}");
+		model.put("clase","/form");
 	 model.put("titulo","Crear Empaque");
 	 return "form";
 	}
@@ -68,32 +72,59 @@ public class EmpaqueController {
 		
 	}
 	model.put("empaque", empaque);
-	model.put("clase","@{/edit}");
+	model.put("clase","/edit");
 	model.put("titulo","Editar Empaque");
 		return "form";
 	}
 	
 	@RequestMapping(value="/form", method=RequestMethod.POST)
 	public String guardar(@Valid Empaque empaque, BindingResult result,Model model,@RequestParam("file") MultipartFile foto,@RequestParam("credencial") MultipartFile credencial, RedirectAttributes flash,SessionStatus status) {
-		
+			
 		if (result.hasErrors()) {
-			model.addAttribute("clase","form-row");
+			model.addAttribute("clase","/form");
 			model.addAttribute("titulo","Crear Empaque");
 			return "form";
 		}
-			
 			if (empaqueService.findOne(empaque.getRut())!=null) {
-				model.addAttribute("clase","form-row");
+				model.addAttribute("clase","/form");
 				model.addAttribute("titulo","Crear Empaque");
 				model.addAttribute("mensaje","Rut Ya se encuentra Registrado");
 				flash.addFlashAttribute("warning","Error al crear  Rut Ya se encuentra Registrado");
 				return "form";
-			} else {
+			}
+			if (!foto.isEmpty()) {
+				Path directorioRecursos = Paths.get("src//main//resources//static/uploads/certificados");
+				String rootPath  = directorioRecursos.toFile().getAbsolutePath();
+				try {
+					byte[] bytes = foto.getBytes();
+					Path rutaCompleta = Paths.get(rootPath +"//" + foto.getOriginalFilename());
+					Files.write(rutaCompleta, bytes);
+					flash.addFlashAttribute("info","Se subido correctamente el certificado '" + foto.getOriginalFilename()+"'");
+					empaque.setCertificado(foto.getOriginalFilename());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	if (!credencial.isEmpty()) {
+		Path directorioRecursos2 = Paths.get("src//main//resources//static/uploads/credenciales");
+		String rootPath2  = directorioRecursos2.toFile().getAbsolutePath();
+		try {
+			byte[] bytes2 = credencial.getBytes();
+			Path rutaCompleta2 = Paths.get(rootPath2 +"//" + credencial.getOriginalFilename());
+			Files.write(rutaCompleta2, bytes2);
+			flash.addFlashAttribute("success2","Se subido correctamente la credencial '" + credencial.getOriginalFilename()+"'");
+			empaque.setFoto(credencial.getOriginalFilename());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+			}
 				empaqueService.save(empaque);
 				status.setComplete();
 				flash.addFlashAttribute("success","Empaque Creado Con exito");
 				return "redirect:listar";
-			}
+			
 		}
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editar(@Valid Empaque empaque, BindingResult result,Model model,SessionStatus status,RedirectAttributes flash) {
