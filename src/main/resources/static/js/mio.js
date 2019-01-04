@@ -39,6 +39,7 @@ $("#fileUpload").on('change', function () {
 
 function something_happens() {
 	document.getElementById("foto").src = null;
+	document.getElementById("fileUpload").value = "";
 	document.getElementById("btncerrar").className = "invisible";
 	document.getElementById("textcredencial").className = "custom-file-label text-left";
 	   var div = document.getElementById('foto');

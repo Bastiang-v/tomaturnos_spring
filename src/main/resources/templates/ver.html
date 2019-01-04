@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head  th:replace="layout/layout :: head">
+</head>
+<header th:replace="layout/layout :: header"></header>
+<body>
+<div class="container py-4">
+	<div class="card bg-light">
+	<div class="card-header bg-dark text-light" th:text="${titulo}"></div>
+	<div class="card-body text-center">
+	
+	<ul class="list-group">
+	<li  th:if="${#strings.length(empaque.foto) > 0}" class="list-group-item"><img class="img-thumbnail rounded float-center"
+					style="max-width: 25%;" th:src="@{'/uploads/credenciales/' + ${empaque.foto}}"
+					th:alt="${empaque.foto}" /></li>
+	<li class="list-group-item" th:text="'Rut : '+${empaque.rut}"></li>
+	 <li class="list-group-item" th:text="'Grupo : '+${empaque.IdGrupo}"></li>
+	<li class="list-group-item" th:text="'Nombre : ' +${empaque.nombre}+' '+${empaque.apellido}"></li>
+	<li class="list-group-item" th:text="'Correo : '+${empaque.correo}"></li>
+	<li class="list-group-item" th:text="'Fecha Ingreso : ' +${empaque.createAt}"></li>
+	<li class="list-group-item" th:if="${empaque.estado==1}"><spam class="btn btn-success">Activo</spam></li>
+    <li class="list-group-item" th:if="${empaque.estado==0}"><spam class="btn btn-danger">Inactivo</spam></li>
+    <li th:if="${#strings.length(empaque.certificado) > 0}" class="list-group-item"><a th:href="@{'/uploads/certificados/' + ${empaque.certificado}}">Certificado Alumno</a></li>
+    <li th:if="${#strings.length(empaque.certificado) == 0}" class="list-group-item">No a Subido Certificado</li>
+	
+	</ul>
+	</div>
+	</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

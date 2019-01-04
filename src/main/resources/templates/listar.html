@@ -14,13 +14,12 @@
 				Empaque</a>
 		</div>
 		<br />
-		<table class="table-striped table table-responsive">
+		<div class="float-center">
+		<table class="table-striped table table-responsive" >
 			<thead class="bg-dark text-light">
 				<tr>
 					<th>Rut</th>
 					<th>Nombre Apellido</th>
-					<th>Correo</th>
-					<th>Fecha_Ingreso</th>
 					<th>Estado</th>
 					<th>Grupo</th>
 					<th>Editar</th>
@@ -29,10 +28,8 @@
 			</thead>
 			<tbody>
 				<tr th:each="empaque: ${empaques}">
-					<td th:text="${empaque.rut}"></td>
+					<td><a class="btn btn-primary btn-xs" th:text="${empaque.rut}" th:href="@{/ver/} + ${empaque.rut}"></a></td>
 					<td th:text="${empaque.nombre}+' '+${empaque.apellido}"></td>
-					<td th:text="${empaque.correo}"></td>
-					<td th:text="${empaque.createAt}"></td>
 					<td th:if="${empaque.estado==1}"><spam class="btn btn-success"></spam></td>
 					<td th:if="${empaque.estado==0}"><spam class="btn btn-danger"></spam></td>
 					<td th:text="${empaque.IdGrupo}"></td>
@@ -40,10 +37,11 @@
 						th:href="@{/edit/}+${empaque.rut}"><span class="fa fa-pencil" aria-hidden="true"></span></a></td>
 					<td><a class="btn btn-danger btn-xs"
 						th:href="@{/eliminar/}+${empaque.rut}"
-						onclick="return confirm('Confirmar Eliminacion?')"><sapn class="fa fa-close"></sapn></a></td>
+						onclick="return confirm('Confirmar Eliminacion?')"><span class="fa fa-close"></span></a></td>
 				</tr>
 			</tbody>
 		</table>
+		</div>
 		<small>
 		<nav th:replace="paginator-nav :: paginator"></nav>
 		</small>
