@@ -1,17 +1,25 @@
 package com.proyectos.springboot.app.controllers;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,7 +44,27 @@ public class EmpaqueController {
     @Autowired
 	private IEmpaqueService empaqueService;
     
+    private final Logger  log =LoggerFactory.getLogger(getClass());
     
+    @GetMapping(value="/uploads/{filename:.+}")
+	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
+		Path pathFoto = Paths.get("uploads").resolve(filename).toAbsolutePath();
+		log.info("pathFoto: " + pathFoto);
+		Resource recurso = null;
+		try {
+			recurso = new UrlResource(pathFoto.toUri());
+			if(!recurso.exists() || !recurso.isReadable()) {
+				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+			}
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +  recurso.getFilename() +"\"")
+				.body(recurso);
+	}
     @GetMapping(value="/ver/{rut}")
     public String ver(@PathVariable(value="rut") String rut,Map<String, Object> model,RedirectAttributes flash) {
     	Empaque empaque = empaqueService.findOne(rut);
@@ -108,87 +136,97 @@ public class EmpaqueController {
 				return "form";
 			}
 			if (!foto.isEmpty()) {
-				Path directorioRecursos = Paths.get("src//main//resources//static/uploads/certificados");
-				String rootPath  = directorioRecursos.toFile().getAbsolutePath();
+				String uniqueFilename = UUID.randomUUID().toString()+ "_" + foto.getOriginalFilename(); 
+				Path rootPath  = Paths.get("uploads").resolve(uniqueFilename);
+				Path rootAbsolutPath = rootPath.toAbsolutePath();
+				log.info("rootPath: "+rootPath);
+				log.info("rootAbsolutPath: "+rootAbsolutPath);
+				
+				
 				try {
-					byte[] bytes = foto.getBytes();
-					Path rutaCompleta = Paths.get(rootPath +"//" + foto.getOriginalFilename());
-					Files.write(rutaCompleta, bytes);
-					flash.addFlashAttribute("info","Se subido correctamente el certificado '" + foto.getOriginalFilename()+"'");
-					empaque.setCertificado(foto.getOriginalFilename());
+					Files.copy(foto.getInputStream(), rootAbsolutPath);
+					flash.addFlashAttribute("warning","Se subido correctamente el certificado '" +uniqueFilename+"'");
+					empaque.setCertificado(uniqueFilename);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-	if (!credencial.isEmpty()) {
-		Path directorioRecursos2 = Paths.get("src//main//resources//static/uploads/credenciales");
-		String rootPath2  = directorioRecursos2.toFile().getAbsolutePath();
-		try {
-			byte[] bytes2 = credencial.getBytes();
-			Path rutaCompleta2 = Paths.get(rootPath2 +"//" + credencial.getOriginalFilename());
-			Files.write(rutaCompleta2, bytes2);
-			flash.addFlashAttribute("success2","Se subido correctamente la credencial '" + credencial.getOriginalFilename()+"'");
-			empaque.setFoto(credencial.getOriginalFilename());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+			if (!credencial.isEmpty()) {
+				String uniqueFilename2 = UUID.randomUUID().toString()+ "_" + credencial.getOriginalFilename(); 
+				Path rootPath2  = Paths.get("uploads").resolve(uniqueFilename2);
+				Path rootAbsolutPath2 = rootPath2.toAbsolutePath();
+				log.info("rootPath2: "+rootPath2);
+				log.info("rootAbsolutPath2: "+rootAbsolutPath2);
+				
+				
+				try {
+					Files.copy(credencial.getInputStream(), rootAbsolutPath2);
+					flash.addFlashAttribute("info","Se subido correctamente la credencial '" +uniqueFilename2+"'");
+					empaque.setFoto(uniqueFilename2);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 				empaqueService.save(empaque);
 				status.setComplete();
-				flash.addFlashAttribute("success","Empaque Creado Con exito");
+				flash.addFlashAttribute("success","Empaque "+ empaque.getNombre()+" "+empaque.getApellido()+" Creado Con exito");
 				return "redirect:listar";
 			
 		}
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public String editar(@Valid Empaque empaque,@RequestParam("file") MultipartFile foto,@RequestParam("credencial") MultipartFile credencial, BindingResult result,Model model,SessionStatus status,RedirectAttributes flash) {
-		
+//		certificado es certificado y foto es credencial
 		if (result.hasErrors()) {
 			model.addAttribute("clase","form-row");
 			model.addAttribute("titulo","Editar Empaque");
 			return "form";
 			
 		}
-		
 		if (!foto.isEmpty()) {
-			Path directorioRecursos = Paths.get("src//main//resources//static/uploads/certificados");
-			String rootPath  = directorioRecursos.toFile().getAbsolutePath();
+			String uniqueFilename = UUID.randomUUID().toString()+ "_" + foto.getOriginalFilename(); 
+			Path rootPath  = Paths.get("uploads").resolve(uniqueFilename);
+			Path rootAbsolutPath = rootPath.toAbsolutePath();
+			log.info("rootPath: "+rootPath);
+			log.info("rootAbsolutPath: "+rootAbsolutPath);
+			
+			
 			try {
-				byte[] bytes = foto.getBytes();
-				Path rutaCompleta = Paths.get(rootPath +"//" + foto.getOriginalFilename());
-				Files.write(rutaCompleta, bytes);
-				flash.addFlashAttribute("info","Se subido correctamente el certificado '" + foto.getOriginalFilename()+"'");
-				empaque.setCertificado(foto.getOriginalFilename());
+				Files.copy(foto.getInputStream(), rootAbsolutPath);
+				flash.addFlashAttribute("warning","Se subido correctamente el certificado '" +uniqueFilename+"'");
+				empaque.setCertificado(uniqueFilename);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-if (!credencial.isEmpty()) {
-	Path directorioRecursos2 = Paths.get("src//main//resources//static/uploads/credenciales");
-	String rootPath2  = directorioRecursos2.toFile().getAbsolutePath();
-	try {
-		byte[] bytes2 = credencial.getBytes();
-		Path rutaCompleta2 = Paths.get(rootPath2 +"//" + credencial.getOriginalFilename());
-		Files.write(rutaCompleta2, bytes2);
-		flash.addFlashAttribute("success2","Se subido correctamente la credencial '" + credencial.getOriginalFilename()+"'");
-		empaque.setFoto(credencial.getOriginalFilename());
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}	
+		if (!credencial.isEmpty()) {
+			String uniqueFilename2 = UUID.randomUUID().toString()+ "_" + credencial.getOriginalFilename(); 
+			Path rootPath2  = Paths.get("uploads").resolve(uniqueFilename2);
+			Path rootAbsolutPath2 = rootPath2.toAbsolutePath();
+			log.info("rootPath2: "+rootPath2);
+			log.info("rootAbsolutPath2: "+rootAbsolutPath2);
+			
+			
+			try {
+				Files.copy(credencial.getInputStream(), rootAbsolutPath2);
+				flash.addFlashAttribute("info","Se subido correctamente la credencial '" +uniqueFilename2+"'");
+				empaque.setFoto(uniqueFilename2);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
 		empaqueService.edit(empaque);
-		flash.addFlashAttribute("success","Empaque Editado Con exito");
+		flash.addFlashAttribute("success","Empaque "+ empaque.getNombre()+" "+empaque.getApellido()+" Editado Con exito");
 		status.setComplete();
 		return "redirect:listar";
 	}
 	@RequestMapping(value="/eliminar/{rut}")
 	public String eliminar(@PathVariable(value="rut") String rut, RedirectAttributes flash) {
 		empaqueService.delete(rut);
-		flash.addFlashAttribute("success","Empaque Eliminado Con exito");
+		flash.addFlashAttribute("success","Empaque rut : "+rut+" Eliminado Con exito");
 		return "redirect:/listar"; 
 	}
 	

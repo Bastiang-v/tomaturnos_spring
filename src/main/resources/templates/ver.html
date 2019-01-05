@@ -10,8 +10,8 @@
 	<div class="card-body text-center">
 	
 	<ul class="list-group">
-	<li  th:if="${#strings.length(empaque.foto) > 0}" class="list-group-item"><img class="img-thumbnail rounded float-center"
-					style="max-width: 25%;" th:src="@{'/uploads/credenciales/' + ${empaque.foto}}"
+	<li  th:if="${empaque.foto}!= null" class="list-group-item"><img class="img-thumbnail rounded float-center"
+					style="max-width: 25%;" th:src="@{'/uploads/' + ${empaque.foto}}" 
 					th:alt="${empaque.foto}" /></li>
 	<li class="list-group-item" th:text="'Rut : '+${empaque.rut}"></li>
 	 <li class="list-group-item" th:text="'Grupo : '+${empaque.IdGrupo}"></li>
@@ -20,8 +20,8 @@
 	<li class="list-group-item" th:text="'Fecha Ingreso : ' +${empaque.createAt}"></li>
 	<li class="list-group-item" th:if="${empaque.estado==1}"><spam class="btn btn-success">Activo</spam></li>
     <li class="list-group-item" th:if="${empaque.estado==0}"><spam class="btn btn-danger">Inactivo</spam></li>
-    <li th:if="${#strings.length(empaque.certificado) > 0}" class="list-group-item"><a th:href="@{'/uploads/certificados/' + ${empaque.certificado}}">Certificado Alumno</a></li>
-    <li th:if="${#strings.length(empaque.certificado) == 0}" class="list-group-item">No a Subido Certificado</li>
+    <li th:if="${empaque.certificado != null}" class="list-group-item"><a th:href="@{'/uploads/' + ${empaque.certificado}}">Certificado Alumno</a></li>
+    <li th:if="${empaque.certificado == ''}" class="list-group-item">No a Subido Certificado</li>
 	
 	</ul>
 	</div>
