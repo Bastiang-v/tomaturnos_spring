@@ -8,7 +8,7 @@ $("#fileUpload").on('change', function () {
      var image_holder = $("#image-holder");
      image_holder.empty();
 
-     if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg"|| extn == "pdf") {
+     if (extn == "png" || extn == "jpg") {
          if (typeof (FileReader) != "undefined") {
 
              //loop for each file selected for uploaded.
