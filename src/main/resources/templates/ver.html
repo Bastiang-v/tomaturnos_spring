@@ -21,8 +21,7 @@
 	<li class="list-group-item" th:if="${empaque.estado==1}"><spam class="btn btn-success">Activo</spam></li>
     <li class="list-group-item" th:if="${empaque.estado==0}"><spam class="btn btn-danger">Inactivo</spam></li>
     <li th:if="${empaque.certificado != null}" class="list-group-item"><a th:href="@{'/uploads/' + ${empaque.certificado}}">Certificado Alumno</a></li>
-    <li th:if="${empaque.certificado == null}" class="list-group-item">No a Subido Certificado Alumno</li>
-
+		<li th:if="${empaque.certificado == null}" class="list-group-item">No a Subido Certificado</li>
 	</ul>
 	</div>
 	</div>

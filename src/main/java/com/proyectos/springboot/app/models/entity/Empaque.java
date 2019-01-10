@@ -2,15 +2,11 @@ package com.proyectos.springboot.app.models.entity;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -37,10 +33,20 @@ public class Empaque implements Serializable{
 	@Column(name="id_grupo")
 	@NotNull
 	private int IdGrupo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Grupo grupo;
+//Carga Perezosa fetch lazy
+@OneToMany(mappedBy = "empaque",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private List<Turno> turnos;
 	
 	private String foto;
 	private String certificado;
-	
+
+	public Empaque() {
+	 turnos = new ArrayList<Turno>();
+	}
+
 	public String getFoto() {
 		return foto;
 	}
@@ -104,8 +110,16 @@ public class Empaque implements Serializable{
 	public void setIdGrupo(int idGrupo) {
 		IdGrupo = idGrupo;
 	}
-	
-	
-	
 
+	public List<Turno> getTurnos() {
+		return turnos;
+	}
+
+	public void setTurnos(List<Turno> turnos) {
+		this.turnos = turnos;
+	}
+
+	public void addTurno(Turno turno){
+		turnos.add(turno);
+	}
 }
